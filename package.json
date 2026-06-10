@@ -1,0 +1,26 @@
+{
+  "name": "langram",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Self-hosted, mobile-first LAN gallery for images and videos.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check public/app.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "author": "Nicholas Beighley",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nick040791/langram.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nick040791/langram/issues"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,22 @@
+# Node
+node_modules/
+npm-debug.log
+.npm/
+
+# Runtime data — never commit. These contain absolute paths from the host
+# and the user's "liked" history. The .gitkeep placeholder keeps the
+# directory in the repo so a fresh clone has a writable data/ folder.
+data/likes.json
+data/settings.json
+!data/.gitkeep
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Secrets
+.env
+.env.local

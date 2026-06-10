@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#fafafa" />
+  <title>LANgram</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">LANgram</div>
+      <div class="topbar-actions">
+        <button class="glyph" type="button" id="settingsButton" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+        <button class="glyph" type="button" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="dot" aria-hidden="true"></span>
+        </button>
+        <button class="glyph" type="button" aria-label="Messages">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="tabbar" role="tablist">
+      <button class="tab active" role="tab" aria-selected="true" data-tab="feed" type="button">Feed</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="explore" type="button">Explore</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="library" type="button">Library</button>
+    </nav>
+
+    <section id="stories" class="stories" aria-label="Folders"></section>
+
+    <section class="controls-panel" id="controlsPanel">
+      <div class="path-card">
+        <label for="galleryPath">Gallery path</label>
+        <div class="path-row">
+          <input id="galleryPath" type="text" placeholder="C:\\Media\\Gallery" autocomplete="off" spellcheck="false" />
+          <button id="browsePathButton" type="button" class="ghost-button" aria-label="Browse">Browse</button>
+          <button id="savePathButton" type="button">Load</button>
+        </div>
+        <div class="status-inline">
+          <span class="muted">Current root</span>
+          <strong id="currentRoot"></strong>
+          <span id="lanUrl" class="muted"></span>
+        </div>
+      </div>
+
+      <div class="filter-strip">
+        <div class="filter-group">
+          <label for="typeFilter">Type</label>
+          <select id="typeFilter">
+            <option value="all">All media</option>
+            <option value="image">Images</option>
+            <option value="video">Videos</option>
+          </select>
+        </div>
+
+        <div class="filter-group filter-group-wide">
+          <label for="folderFilter">Folder</label>
+          <select id="folderFilter"></select>
+        </div>
+
+        <div class="filter-group filter-group-wide">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" type="search" placeholder="Search files or folders" />
+        </div>
+
+        <div class="filter-group">
+          <label for="likedOnlyToggle">Likes</label>
+          <button id="likedOnlyToggle" class="toggle-button" type="button" aria-pressed="false">Show liked only</button>
+        </div>
+      </div>
+
+      <div id="message" class="message"></div>
+      <div id="summary" class="muted" style="font-size: 0.78rem; padding: 0 4px;"></div>
+    </section>
+
+    <main class="content">
+      <div id="feed" class="feed" aria-live="polite"></div>
+      <div id="emptyState" class="empty-state hidden">No matching media found.</div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav" aria-label="Primary">
+    <button class="glyph active" type="button" aria-label="Home">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg>
+    </button>
+    <button class="glyph" type="button" aria-label="Search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    </button>
+    <button class="glyph" type="button" aria-label="New post">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg>
+    </button>
+    <button class="glyph" type="button" aria-label="Reels">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m3 12 18-9-6.5 18-2.5-7z"/></svg>
+    </button>
+    <button class="glyph" type="button" aria-label="Profile">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    </button>
+  </nav>
+
+  <div id="viewer" class="viewer" hidden>
+    <div class="viewer-stage" id="viewerStage"></div>
+    <div class="viewer-overlay" id="viewerOverlay">
+      <div class="viewer-top">
+        <button id="closeViewer" class="viewer-icon-button" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="viewer-meta" id="viewerMeta"></div>
+        <button id="likeViewer" class="viewer-icon-button" type="button" aria-label="Like">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+        </button>
+      </div>
+      <button id="prevViewer" class="nav-button nav-prev" type="button" aria-label="Previous">‹</button>
+      <button id="nextViewer" class="nav-button nav-next" type="button" aria-label="Next">›</button>
+      <div class="viewer-counter" id="viewerCounter"></div>
+    </div>
+  </div>
+
+  <dialog id="browseDialog" class="browse-dialog" aria-label="Browse host folders">
+    <form method="dialog" class="browse-header">
+      <h2>Pick a folder</h2>
+      <button value="cancel" class="viewer-icon-button" type="submit" aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </form>
+    <nav id="browseCrumbs" class="browse-crumbs" aria-label="Path"></nav>
+    <div class="browse-toolbar">
+      <button id="browseUp" type="button" class="ghost-button">↑ Up</button>
+      <span id="browseMeta" class="muted"></span>
+    </div>
+    <ul id="browseList" class="browse-list" aria-live="polite"></ul>
+    <div id="browseError" class="banner banner-error hidden" role="alert"></div>
+    <div class="browse-footer">
+      <button type="button" id="browseRefresh" class="ghost-button">Refresh</button>
+      <button type="button" id="browsePick" class="primary-button">Use this folder</button>
+    </div>
+  </dialog>
+
+  <dialog id="tokenDialog" class="browse-dialog" aria-label="Bearer token">
+    <form method="dialog" class="browse-header">
+      <h2>Bearer token</h2>
+      <button value="cancel" class="viewer-icon-button" type="submit" aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </form>
+    <div style="padding: 14px 16px;">
+      <p class="muted" style="margin: 0 0 8px; font-size: 0.85rem;">
+        The server was started with <code>LANGRAM_TOKEN</code>. Enter the same token here to
+        unlock folder changes and likes. The token is stored in this browser's localStorage only.
+      </p>
+      <label for="tokenInput" style="display:block; margin-top: 6px;">Token</label>
+      <input id="tokenInput" type="password" autocomplete="off" spellcheck="false" />
+    </div>
+    <div class="browse-footer">
+      <button type="button" id="tokenClear" class="ghost-button">Clear stored token</button>
+      <button type="button" id="tokenSave" class="primary-button">Save</button>
+    </div>
+  </dialog>
+
+  <script src="/app.js"></script>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></symbol>
+      <symbol id="i-heart-filled" viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="i-comment" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></symbol>
+      <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-bookmark-filled" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+    </defs>
+  </svg>
+</body>
+</html>
